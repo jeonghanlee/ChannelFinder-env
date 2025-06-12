@@ -1,9 +1,6 @@
 # ChannelFinder-env
 [![Debian 11](https://github.com/jeonghanlee/ChannelFinder-env/actions/workflows/debian11.yml/badge.svg)](https://github.com/jeonghanlee/ChannelFinder-env/actions/workflows/debian11.yml)
 [![Rocky8](https://github.com/jeonghanlee/ChannelFinder-env/actions/workflows/rocky8.yml/badge.svg)](https://github.com/jeonghanlee/ChannelFinder-env/actions/workflows/rocky8.yml)
-[![Ubuntu Latest](https://github.com/jeonghanlee/ChannelFinder-env/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/jeonghanlee/ChannelFinder-env/actions/workflows/ubuntu.yml)
-[![ChannelFinderService](https://github.com/jeonghanlee/ChannelFinder-env/actions/workflows/docker.yml/badge.svg)](https://github.com/jeonghanlee/ChannelFinder-env/actions/workflows/docker.yml)
-[![Linter Run](https://github.com/jeonghanlee/ChannelFinder-env/actions/workflows/linter.yml/badge.svg)](https://github.com/jeonghanlee/ChannelFinder-env/actions/workflows/linter.yml)
 
 Configuration Environment for ChannelFinderService at <https://github.com/ChannelFinder/ChannelFinderService>
 
@@ -15,7 +12,7 @@ git make sudo tree maven jq
 
 ## Elasticsearch
 
-Three configurations are changed for the elasticsearch. 
+Three configurations are changed for the elasticsearch.
 
 * Elasticsearch JVM options : [default] `-Xms1g -Xmx1g`
 * Elasticsearch `pack.security.enabled` option : [default] false
@@ -66,7 +63,7 @@ The following four variables must be defined. Please setup them according to one
         echo "MAVEN_PATH:=/usr/bin" >> ./configure/CONFIG_COMMON.local
 ```
 
-## Support OS 
+## Support OS
 
 ### Debian 11 (EOL: 2024-06-01/2026-08-15), Rocky8 (EOL: 2029-05-31)
 
@@ -87,7 +84,7 @@ ChannelFinder log is shown in `/var/log/syslog`.
 tail -f /var/log/syslog |grep java
 
 make cflog.show
-``` 
+```
 
 Please check Tomcat generic service, if CF doesn't start.
 

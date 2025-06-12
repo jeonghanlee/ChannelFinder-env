@@ -1,0 +1,9 @@
+#
+
+ES_VERSION:=8.17.2
+ES_NAME:=elasticsearch-$(ES_VERSION)
+ES_FILE:=$(ES_NAME)-linux-x86_64.tar.gz
+ES_DN_URL:=https://artifacts.elastic.co/downloads/elasticsearch/$(ES_FILE)
+
+ES_TARGET_PATH:=$(TOP)
+

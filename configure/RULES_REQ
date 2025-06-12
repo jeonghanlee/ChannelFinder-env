@@ -8,20 +8,20 @@ remove_es_RULES:=$(addprefix remove., $(es_RULES_NAMES))
 .PHONY: clean.conf.es conf.es start.es status.es restart.es stop.es disable.es mapping mapping.clean mapping.settings conf.es.show conf.esmac.show
 .PHONE: start.esmac stop.esmac
 
-#https://www.elastic.co/guide/en/elasticsearch/reference/current/release-notes-8.2.0.html
-ES_NAME:=elasticsearch
-ES_VER:=8.2.0
-ES_FILE:=$(ES_NAME)-$(ES_VER)
-ES_DEB:=$(ES_FILE)-amd64.deb
-ES_RPM:=$(ES_FILE)-x86_64.rpm
-ifeq ($(UNAME_M), arm64)
-ES_MAC:=$(ES_FILE)-darwin-aarch64.tar.gz
-else
-ES_MAC:=$(ES_FILE)-darwin-x86_64.tar.gz
-endif
-ES_HOME_MAC:=$(ES_FILE)
-ES_PID_MAC:=$(TOP)/$(ES_HOME_MAC)/es_mac_pid
-ES_JAVA_OPTS_FILE:=cf_es_jvm.options
+
+install.services: get.elasticsearch extract.elasticsearch
+
+get.elasticsearch:
+	@wget -c $(ES_DN_URL)
+
+extract.elasticsearch:
+	@tar xvzf $(TOP)/$(ES_FILE)
+	@ln -sfn $(ES_TARGET_PATH)/$(ES_NAME) $(ES_TARGET_PATH)/elasticsearch
+#	@cp -f $(TOP)/site-config/elasticsearch.yml $(ES_TARGET_PATH)/elasticsearch/config/
+
+uninstall.elasticsearch:
+	@rm -rf $(ES_TARGET_PATH)/$(ES_NAME)
+	@rm -rf $(ES_TARGET_PATH)/elasticsearch
 
 # Debian 11
 setup.esdeb: install.esdeb enable.es
@@ -35,7 +35,7 @@ clean.conf.es:
 	$(QUIET) rm -f $(CF_SITE_TEMPLATE_PATH)/$(ES_JAVA_OPTS_FILE)
 
 $(CF_ES_JAVA_OPTS): clean.conf.es
-	$(QUIET)echo "$@" >> $(CF_SITE_TEMPLATE_PATH)/$(ES_JAVA_OPTS_FILE) 
+	$(QUIET)echo "$@" >> $(CF_SITE_TEMPLATE_PATH)/$(ES_JAVA_OPTS_FILE)
 
 #conf.es: $(CF_ES_JAVA_OPTS)
 #	$(QUIET)$(SUDO) $(INSTALL) -p -m 660 $(CF_SITE_TEMPLATE_PATH)/$(ES_JAVA_OPTS_FILE) $(CF_ES_CONF_PATH)/jvm.options.d/
@@ -77,7 +77,7 @@ conf.esmac.show:
 	cat -b $(CF_ES_CONF_PATH)/jvm.options.d/$(ES_JAVA_OPTS_FILE)
 	cat -b $(CF_ES_CONF_PATH)/$(CF_ES_CONF_NAME)
 
-conf.es.show: 
+conf.es.show:
 	$(SUDO) cat -b $(CF_ES_CONF_PATH)/jvm.options.d/$(ES_JAVA_OPTS_FILE)
 	$(SUDO) cat -b $(CF_ES_CONF_PATH)/$(CF_ES_CONF_NAME)
 
@@ -126,19 +126,19 @@ start.esmac:
 start.esmac.console:
 	$(QUIET) $(TOP)/$(ES_HOME_MAC)/bin/elasticsearch -p $(ES_PID_MAC)
 
-status.es:	
+status.es:
 	$(QUIET)systemctl status -l elasticsearch.service | cat -b
 
-status.esmac:	
+status.esmac:
 	$(QUIET) cat -b $(TOP)/$(ES_HOME_MAC)/logs/elasticsearch.log
 
-stop.es:	
+stop.es:
 	$(QUIET)systemctl stop elasticsearch.service
 
 stop.esmac:
 	$(QUIET)pkill -F $(ES_PID_MAC)
 
-disable.es:	
+disable.es:
 	$(QUIET)systemctl disable elasticsearch.service
 
 restart.es:
